@@ -52,7 +52,10 @@ public class RNModbusModule extends ReactContextBaseJavaModule {
   public void openDevice(String path, int baudrate, int dataBits, int parity,int stopBits,final Promise promise) {
     if (ModbusManager.get().isModbusOpened()) {
       // 关闭设备
-      ModbusManager.get().closeModbusMaster();
+      // ModbusManager.get().closeModbusMaster();
+       WritableMap map = Arguments.createMap();
+        map.putDouble("code", 1);
+        promise.resolve(map);
       return;
     }
 
@@ -100,7 +103,7 @@ public class RNModbusModule extends ReactContextBaseJavaModule {
                               ReadHoldingRegistersResponse readHoldingRegistersResponse) {
                         //short[] shortData = readHoldingRegistersResponse.getShortData();
                         byte[] data = readHoldingRegistersResponse.getData();
-                        Log.d(TAG, "onSuccess: 读到数据:"+ ByteUtil.bytes2HexStr(data));
+                        Log.d(TAG, "onSuccess: 读到数据: " + start + " " + ByteUtil.bytes2HexStr(data));
                         WritableArray receiveArray = Arguments.createArray();
                         for (int i = 0; i < data.length; i++) {
                           int cmdSingle = data[i] & 0xFF;
@@ -115,7 +118,7 @@ public class RNModbusModule extends ReactContextBaseJavaModule {
 
                       @Override
                       public void onFailure(Throwable tr) {
-                        Log.d(TAG, "onSuccess: 读到数据:"+ 12346);
+                        Log.d(TAG, "onSuccess: 读取失败: "+ start);
                           WritableArray receiveArray = Arguments.createArray();
 //                          promise.resolve(receiveArray);
                           WritableMap map = Arguments.createMap();
